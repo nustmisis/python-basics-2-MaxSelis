@@ -93,4 +93,64 @@ from __future__ import annotations  # игнорируйте эту строку
 
 
 class Complex:
-    pass  # удалите эту строку и введите свое решение
+    def __init__(self, real=0, imag=0):
+        self.real = real
+        self.imag = imag
+
+    def __add__(self, other):
+        if isinstance(other, (int, float)):
+            return Complex(self.real + other, self.imag)
+
+        elif isinstance (other, Complex):
+            return Complex(self.real + other.real, self.imag + other.imag)
+    
+    def __radd__(self, other):
+        return self.__add__(other)
+    
+    def __sub__(self, other):
+        if isinstance(other, (int, float)):
+            return Complex(self.real - other, self.imag)
+        elif isinstance(other, Complex):
+            return Complex(self.real - other.real, self.imag - other.imag)
+
+    def __rsub__(self, other):
+        return Complex(other - self.real, -self.imag)
+    
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            return Complex(self.real * other, self.imag * other)
+        elif isinstance(other, Complex):
+            return Complex(self.real * other.real - self.imag * other.imag,
+                           self.real * other.imag + self.imag * other.real)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+    
+    def __truediv__(self, other):
+        if isinstance(other, (int, float)):
+            return Complex(self.real / other, self.imag / other)
+        elif isinstance(other, Complex):
+            divisor = other.real ** 2 + other.imag ** 2
+            return Complex((self.real * other.real + self.imag * other.imag) / divisor,
+                           (self.imag * other.real - self.real * other.imag) / divisor)
+        
+    def __eq__(self, other):
+        if isinstance(other, (int, float)):
+            return self.real == other and self.imag == 0
+        elif isinstance(other, Complex):
+            return self.real == other.real and self.imag == other.imag
+    
+    def __noteq__(self, other):
+        return not self.__eq__(other)
+    
+    def __str__(self):
+        if self.imag >= 0:
+            return f"{self.real}+{self.imag}i"
+        else:
+            return f"{self.real}{self.imag}i"
+
+
+if __name__ == "__main__":
+    c1 = Complex(1)
+    c2 = Complex(2)
+    print(c1 + 1)
