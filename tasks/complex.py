@@ -99,55 +99,67 @@ class Complex:
 
     def __add__(self, other):
         if isinstance(other, (int, float)):
-            return Complex(self.real + other, self.imag)
-
-        elif isinstance (other, Complex):
-            return Complex(self.real + other.real, self.imag + other.imag)
+            other = Complex(other)
+        return Complex(self.real + other.real, self.imag + other.imag)
     
     def __radd__(self, other):
         return self.__add__(other)
     
     def __sub__(self, other):
         if isinstance(other, (int, float)):
-            return Complex(self.real - other, self.imag)
-        elif isinstance(other, Complex):
-            return Complex(self.real - other.real, self.imag - other.imag)
+            other = Complex(other)
+        return Complex(self.real - other.real, self.imag - other.imag)
 
     def __rsub__(self, other):
-        return Complex(other - self.real, -self.imag)
+        if isinstance(other, (int, float)):
+            other = Complex(other)
+        return other.__sub__(self)
     
     def __mul__(self, other):
         if isinstance(other, (int, float)):
-            return Complex(self.real * other, self.imag * other)
-        elif isinstance(other, Complex):
-            return Complex(self.real * other.real - self.imag * other.imag,
-                           self.real * other.imag + self.imag * other.real)
+            other = Complex(other)
+        real = self.real * other.real - self.imag * other.imag
+        imag = self.real * other.imag + self.imag * other.real
+        return Complex(real, imag)
 
     def __rmul__(self, other):
         return self.__mul__(other)
     
     def __truediv__(self, other):
         if isinstance(other, (int, float)):
-            return Complex(self.real / other, self.imag / other)
-        elif isinstance(other, Complex):
-            divisor = other.real ** 2 + other.imag ** 2
-            return Complex((self.real * other.real + self.imag * other.imag) / divisor,
-                           (self.imag * other.real - self.real * other.imag) / divisor)
+            other = Complex(other)
+        denominator = other.real**2 + other.imag**2
+        real = (self.real * other.real + self.imag * other.imag) / denominator
+        imag = (self.imag * other.real - self.real * other.imag) / denominator
+        return Complex(real, imag)
         
+    def __rtruediv__(self, other):
+        if isinstance(other, (int, float)):
+            other = Complex(other)
+        return other.__truediv__(self)
+    
     def __eq__(self, other):
         if isinstance(other, (int, float)):
-            return self.real == other and self.imag == 0
-        elif isinstance(other, Complex):
-            return self.real == other.real and self.imag == other.imag
+            other = Complex(other)
+        return self.real == other.real and self.imag == other.imag
     
     def __noteq__(self, other):
         return not self.__eq__(other)
     
     def __str__(self):
-        if self.imag >= 0:
-            return f"{self.real}+{self.imag}i"
+        real_str = f"{self.real:.10g}" if isinstance(self.real, float) else str(self.real)
+        imag_str = f"{self.imag:.10g}" if isinstance(self.imag, float) else str(self.imag)
+        
+        if self.real == 0 and self.imag == 0:
+            return "0+0i"
+        elif self.real == 0:
+            return f"{imag_str}i"
+        elif self.imag == 0:
+            return f"{real_str}+0i"
+        elif self.imag > 0:
+            return f"{real_str}+{imag_str}i"
         else:
-            return f"{self.real}{self.imag}i"
+            return f"{real_str}{imag_str}i"
 
 
 if __name__ == "__main__":
