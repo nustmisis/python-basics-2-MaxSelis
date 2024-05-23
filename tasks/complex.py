@@ -129,6 +129,8 @@ class Complex:
         if isinstance(other, (int, float)):
             other = Complex(other)
         denominator = other.real**2 + other.imag**2
+        if denominator == 0:
+            raise ZeroDivisionError("complex division by zero")
         real = (self.real * other.real + self.imag * other.imag) / denominator
         imag = (self.imag * other.real - self.real * other.imag) / denominator
         return Complex(real, imag)
